@@ -9,13 +9,20 @@ include('conexao.php');
 $sql = "SELECT id, nome, email, idade FROM alunos";
 $result = $conn->query($sql);
 
-// Verificar se há alunos na sessão e banco de dados
-$alunos = isset($_SESSION['alunos']) ? $_SESSION['alunos'] : array();
+// Criar um array vazio para armazenar os alunos
+$alunos = array();
 
-// Adicionar os alunos da base de dados à variável $alunos
-while ($row = $result->fetch_assoc()) {
-    $alunos[] = $row;
+// Verificar se a consulta retornou resultados
+if ($result->num_rows > 0) {
+    // Adicionar os alunos do banco de dados à lista de alunos
+    while ($row = $result->fetch_assoc()) {
+        $alunos[] = $row;
+    }
+} else {
+    echo "Nenhum aluno encontrado.";
 }
+
+$conn->close(); // Fechar a conexão com o banco de dados
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +47,7 @@ while ($row = $result->fetch_assoc()) {
                     <th>Ações</th>
                 </tr>";
         
-        // Exibir os alunos
+        // Exibir alunos
         foreach ($alunos as $aluno) {
             echo "<tr>
                     <td>" . $aluno['nome'] . "</td>
